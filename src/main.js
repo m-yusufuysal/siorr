@@ -1,5 +1,12 @@
 import './style.css'
 
+// Base URL for assets
+const BASE_URL = import.meta.env.BASE_URL;
+
+function getAssetPath(path) {
+  return path.startsWith('/') ? BASE_URL + path.slice(1) : BASE_URL + path;
+}
+
 document.querySelector('#app').innerHTML = `
   <!-- Top Bar -->
   <div class="top-bar">
@@ -194,17 +201,17 @@ document.querySelector('#app').innerHTML = `
       </form>
     </div>
   </div>
-`
+`;
 
 // Product Data
 const products = [
-  { id: 1, name: 'Eternal Sparkle Ring', category: 'Rings', price: '18,500 AED', material: '18k White Gold | VVS Diamonds', image: '/ring.png', style: '' },
-  { id: 2, name: 'Golden Dawn Solitaire', category: 'Rings', price: '22,400 AED', material: 'Rose Gold | Rare Pink Diamond', image: '/ring.png', style: '' },
-  { id: 3, name: 'Midnight Noir Band', category: 'Rings', price: '9,800 AED', material: 'Black Gold | Polished Onyx', image: '/ring.png', style: '' },
-  { id: 4, name: 'Celestial Halo Emerald', category: 'Rings', price: '28,900 AED', material: 'Platinum | Colombian Emerald', image: '/ring.png', style: '' },
-  { id: 5, name: 'Elite Diamond Choker', category: 'Necklaces', price: '45,000 AED', material: 'Platinum | 5ct Round Diamonds', image: '/ring.png', style: '' },
-  { id: 6, name: 'Royal Sapphire Pendant', category: 'Necklaces', price: '32,000 AED', material: '18k White Gold | Ceylon Sapphire', image: '/ring.png', style: '' },
-  { id: 7, name: 'Masterpiece Chrono', category: 'Timepieces', price: '120,000 AED', material: 'Titanium | Diamond Bezel', image: '/ring.png', style: '' },
+  { id: 1, name: 'Eternal Sparkle Ring', category: 'Rings', price: '18,500 AED', material: '18k White Gold | VVS Diamonds', image: getAssetPath('/ring.png'), style: '' },
+  { id: 2, name: 'Golden Dawn Solitaire', category: 'Rings', price: '22,400 AED', material: 'Rose Gold | Rare Pink Diamond', image: getAssetPath('/ring.png'), style: '' },
+  { id: 3, name: 'Midnight Noir Band', category: 'Rings', price: '9,800 AED', material: 'Black Gold | Polished Onyx', image: getAssetPath('/ring.png'), style: '' },
+  { id: 4, name: 'Celestial Halo Emerald', category: 'Rings', price: '28,900 AED', material: 'Platinum | Colombian Emerald', image: getAssetPath('/ring.png'), style: '' },
+  { id: 5, name: 'Elite Diamond Choker', category: 'Necklaces', price: '45,000 AED', material: 'Platinum | 5ct Round Diamonds', image: getAssetPath('/ring.png'), style: '' },
+  { id: 6, name: 'Royal Sapphire Pendant', category: 'Necklaces', price: '32,000 AED', material: '18k White Gold | Ceylon Sapphire', image: getAssetPath('/ring.png'), style: '' },
+  { id: 7, name: 'Masterpiece Chrono', category: 'Timepieces', price: '120,000 AED', material: 'Titanium | Diamond Bezel', image: getAssetPath('/ring.png'), style: '' },
 ];
 
 function renderProducts(category = 'All', targetId = 'product-grid') {
@@ -283,25 +290,25 @@ function navigateToView(viewId) {
 
       <section class="visual-categories">
         <div class="visual-category-card" onclick="navigateToCategory('Rings')">
-          <img src="/rings-category.jpg" alt="Rings">
+          <img src="${getAssetPath('/rings-category.jpg')}" alt="Rings">
           <div class="category-overlay">
             <h3>Rings</h3>
           </div>
         </div>
         <div class="visual-category-card" onclick="navigateToCategory('Necklaces')">
-          <img src="/necklaces-category.jpg" alt="Necklaces">
+          <img src="${getAssetPath('/necklaces-category.jpg')}" alt="Necklaces">
           <div class="category-overlay">
             <h3>Necklaces</h3>
           </div>
         </div>
         <div class="visual-category-card" onclick="navigateToCategory('Earrings')">
-          <img src="/earrings-category.jpg" alt="Earrings">
+          <img src="${getAssetPath('/earrings-category.jpg')}" alt="Earrings">
           <div class="category-overlay">
             <h3>Earrings</h3>
           </div>
         </div>
         <div class="visual-category-card" onclick="navigateToCategory('Bracelets')">
-          <img src="/bracelets-category.jpg" alt="Bracelets">
+          <img src="${getAssetPath('/bracelets-category.jpg')}" alt="Bracelets">
           <div class="category-overlay">
             <h3>Bracelets</h3>
           </div>
