@@ -1,13 +1,18 @@
 import './style.css'
 
-// Base URL for assets
-const BASE_URL = import.meta.env.BASE_URL;
+// Debugging
+console.log('Sior App Starting...');
+try {
 
-function getAssetPath(path) {
-  return path.startsWith('/') ? BASE_URL + path.slice(1) : BASE_URL + path;
-}
+  // Base URL for assets
+  const BASE_URL = import.meta.env.BASE_URL;
+  console.log('Base URL:', BASE_URL);
 
-document.querySelector('#app').innerHTML = `
+  function getAssetPath(path) {
+    return path.startsWith('/') ? BASE_URL + path.slice(1) : BASE_URL + path;
+  }
+
+  document.querySelector('#app').innerHTML = `
   <!-- Top Bar -->
   <div class="top-bar">
     <div class="top-bar-content">
@@ -203,23 +208,23 @@ document.querySelector('#app').innerHTML = `
   </div>
 `;
 
-// Product Data
-const products = [
-  { id: 1, name: 'Eternal Sparkle Ring', category: 'Rings', price: '18,500 AED', material: '18k White Gold | VVS Diamonds', image: getAssetPath('/ring.png'), style: '' },
-  { id: 2, name: 'Golden Dawn Solitaire', category: 'Rings', price: '22,400 AED', material: 'Rose Gold | Rare Pink Diamond', image: getAssetPath('/ring.png'), style: '' },
-  { id: 3, name: 'Midnight Noir Band', category: 'Rings', price: '9,800 AED', material: 'Black Gold | Polished Onyx', image: getAssetPath('/ring.png'), style: '' },
-  { id: 4, name: 'Celestial Halo Emerald', category: 'Rings', price: '28,900 AED', material: 'Platinum | Colombian Emerald', image: getAssetPath('/ring.png'), style: '' },
-  { id: 5, name: 'Elite Diamond Choker', category: 'Necklaces', price: '45,000 AED', material: 'Platinum | 5ct Round Diamonds', image: getAssetPath('/ring.png'), style: '' },
-  { id: 6, name: 'Royal Sapphire Pendant', category: 'Necklaces', price: '32,000 AED', material: '18k White Gold | Ceylon Sapphire', image: getAssetPath('/ring.png'), style: '' },
-  { id: 7, name: 'Masterpiece Chrono', category: 'Timepieces', price: '120,000 AED', material: 'Titanium | Diamond Bezel', image: getAssetPath('/ring.png'), style: '' },
-];
+  // Product Data
+  const products = [
+    { id: 1, name: 'Eternal Sparkle Ring', category: 'Rings', price: '18,500 AED', material: '18k White Gold | VVS Diamonds', image: getAssetPath('/ring.png'), style: '' },
+    { id: 2, name: 'Golden Dawn Solitaire', category: 'Rings', price: '22,400 AED', material: 'Rose Gold | Rare Pink Diamond', image: getAssetPath('/ring.png'), style: '' },
+    { id: 3, name: 'Midnight Noir Band', category: 'Rings', price: '9,800 AED', material: 'Black Gold | Polished Onyx', image: getAssetPath('/ring.png'), style: '' },
+    { id: 4, name: 'Celestial Halo Emerald', category: 'Rings', price: '28,900 AED', material: 'Platinum | Colombian Emerald', image: getAssetPath('/ring.png'), style: '' },
+    { id: 5, name: 'Elite Diamond Choker', category: 'Necklaces', price: '45,000 AED', material: 'Platinum | 5ct Round Diamonds', image: getAssetPath('/ring.png'), style: '' },
+    { id: 6, name: 'Royal Sapphire Pendant', category: 'Necklaces', price: '32,000 AED', material: '18k White Gold | Ceylon Sapphire', image: getAssetPath('/ring.png'), style: '' },
+    { id: 7, name: 'Masterpiece Chrono', category: 'Timepieces', price: '120,000 AED', material: 'Titanium | Diamond Bezel', image: getAssetPath('/ring.png'), style: '' },
+  ];
 
-function renderProducts(category = 'All', targetId = 'product-grid') {
-  const grid = document.getElementById(targetId) || document.querySelector('.product-grid');
-  if (!grid) return;
-  const filtered = category === 'All' ? products : products.filter(p => p.category === category);
+  function renderProducts(category = 'All', targetId = 'product-grid') {
+    const grid = document.getElementById(targetId) || document.querySelector('.product-grid');
+    if (!grid) return;
+    const filtered = category === 'All' ? products : products.filter(p => p.category === category);
 
-  grid.innerHTML = filtered.map(p => `
+    grid.innerHTML = filtered.map(p => `
     <div class="product-card reveal">
       <div class="product-image">
         <img src="${p.image}" alt="${p.name}" style="${p.style}">
@@ -233,44 +238,44 @@ function renderProducts(category = 'All', targetId = 'product-grid') {
     </div>
   `).join('');
 
-  // Re-run animation observer for new elements
-  initReveal();
+    // Re-run animation observer for new elements
+    initReveal();
 
-  // Update product count if element exists
-  const countEl = document.getElementById('product-count');
-  if (countEl) countEl.textContent = filtered.length;
-}
-
-window.switchCategoryTab = (category, btn) => {
-  // Update UI
-  const tabs = btn.parentElement.querySelectorAll('.tab-btn');
-  tabs.forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-
-  // Render products
-  renderProducts(category, 'home-category-grid');
-};
-
-window.navigateToCategory = (category) => {
-  const tabBtn = document.querySelector(`.tab-btn[onclick*="${category}"]`);
-  if (tabBtn) {
-    tabBtn.click();
-    setTimeout(() => {
-      document.querySelector('.sparkle-section').scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    // Update product count if element exists
+    const countEl = document.getElementById('product-count');
+    if (countEl) countEl.textContent = filtered.length;
   }
-};
 
-// Initial Render
-navigateToView('home');
+  window.switchCategoryTab = (category, btn) => {
+    // Update UI
+    const tabs = btn.parentElement.querySelectorAll('.tab-btn');
+    tabs.forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
 
-// Navigation logic
-function navigateToView(viewId) {
-  const mainContent = document.getElementById('main-content');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Render products
+    renderProducts(category, 'home-category-grid');
+  };
 
-  if (viewId === 'home') {
-    mainContent.innerHTML = `
+  window.navigateToCategory = (category) => {
+    const tabBtn = document.querySelector(`.tab-btn[onclick*="${category}"]`);
+    if (tabBtn) {
+      tabBtn.click();
+      setTimeout(() => {
+        document.querySelector('.sparkle-section').scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  };
+
+  // Initial Render
+  navigateToView('home');
+
+  // Navigation logic
+  function navigateToView(viewId) {
+    const mainContent = document.getElementById('main-content');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (viewId === 'home') {
+      mainContent.innerHTML = `
       <section class="hero" id="home">
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
@@ -377,11 +382,11 @@ function navigateToView(viewId) {
         </div>
       </section>
     `;
-    renderProducts('Rings', 'home-category-grid');
-    renderProducts('All', 'bestsellers-grid');
-    initReveal();
-  } else if (viewId === 'contact') {
-    mainContent.innerHTML = `
+      renderProducts('Rings', 'home-category-grid');
+      renderProducts('All', 'bestsellers-grid');
+      initReveal();
+    } else if (viewId === 'contact') {
+      mainContent.innerHTML = `
       <section class="contact-page">
         <div class="contact-header">
           <h1>Connect with Our Concierge</h1>
@@ -400,14 +405,14 @@ function navigateToView(viewId) {
         </div>
       </section>
     `;
-    document.getElementById('contact-form-main').addEventListener('submit', (e) => {
-      e.preventDefault();
-      alert('Thank you. We will be in touch shortly.');
-    });
-  } else {
-    // Category Pages
-    const displayCategory = viewId === 'collection' ? 'Elite Collection' : viewId;
-    mainContent.innerHTML = `
+      document.getElementById('contact-form-main').addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Thank you. We will be in touch shortly.');
+      });
+    } else {
+      // Category Pages
+      const displayCategory = viewId === 'collection' ? 'Elite Collection' : viewId;
+      mainContent.innerHTML = `
       <section class="category-page">
         <div class="category-header">
           <h1 class="fade-in">${displayCategory}</h1>
@@ -424,115 +429,115 @@ function navigateToView(viewId) {
         </div>
       </section>
     `;
-    const filterCat = viewId === 'collection' ? 'All' : viewId;
-    renderProducts(filterCat, 'category-grid');
+      const filterCat = viewId === 'collection' ? 'All' : viewId;
+      renderProducts(filterCat, 'category-grid');
+    }
   }
-}
 
-// Interactivity logic
-document.querySelectorAll('#main-nav a, .view-link').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-    const viewId = this.getAttribute('data-view');
-    navigateToView(viewId);
+  // Interactivity logic
+  document.querySelectorAll('#main-nav a, .view-link').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const viewId = this.getAttribute('data-view');
+      navigateToView(viewId);
 
-    // Update active state in nav (if applicable)
-    document.querySelectorAll('#main-nav a').forEach(a => a.classList.remove('active'));
-    if (this.closest('#main-nav')) {
-      this.classList.add('active');
+      // Update active state in nav (if applicable)
+      document.querySelectorAll('#main-nav a').forEach(a => a.classList.remove('active'));
+      if (this.closest('#main-nav')) {
+        this.classList.add('active');
+      }
+    });
+  });
+
+  // Footer Contact Link
+  document.addEventListener('click', (e) => {
+    const logo = e.target.closest('#header-logo');
+    if (logo) {
+      e.preventDefault();
+      navigateToView('home');
+      return;
+    }
+
+    if (e.target.id === 'contact-link-footer') {
+      e.preventDefault();
+      navigateToView('contact');
     }
   });
-});
 
-// Footer Contact Link
-document.addEventListener('click', (e) => {
-  const logo = e.target.closest('#header-logo');
-  if (logo) {
+  // Modal Logic
+  const modal = document.getElementById('appointment-modal');
+  const closeBtn = document.querySelector('.modal-close');
+  const appointmentBtns = ['appointment-btn', 'subscribe-btn'];
+
+  appointmentBtns.forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        modal.classList.add('active');
+      });
+    }
+  });
+
+  closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+  window.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+
+  document.getElementById('appointment-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    navigateToView('home');
-    return;
-  }
+    alert('Thank you. A Sior concierge will contact you within 24 hours.');
+    modal.classList.remove('active');
+  });
 
-  if (e.target.id === 'contact-link-footer') {
-    e.preventDefault();
-    navigateToView('contact');
-  }
-});
+  // Mobile Menu Toggle
+  const menuToggle = document.getElementById('menu-toggle');
+  const mainNav = document.getElementById('main-nav');
+  if (menuToggle && mainNav) {
+    menuToggle.addEventListener('click', () => {
+      mainNav.classList.toggle('active');
+      const isOpened = mainNav.classList.contains('active');
+      menuToggle.innerHTML = isOpened
+        ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'
+        : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+    });
 
-// Modal Logic
-const modal = document.getElementById('appointment-modal');
-const closeBtn = document.querySelector('.modal-close');
-const appointmentBtns = ['appointment-btn', 'subscribe-btn'];
-
-appointmentBtns.forEach(id => {
-  const btn = document.getElementById(id);
-  if (btn) {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      modal.classList.add('active');
+    // Close menu when clicking links
+    mainNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mainNav.classList.remove('active');
+        menuToggle.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+      });
     });
   }
-});
 
-closeBtn.addEventListener('click', () => modal.classList.remove('active'));
-window.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
-
-document.getElementById('appointment-form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  alert('Thank you. A Sior concierge will contact you within 24 hours.');
-  modal.classList.remove('active');
-});
-
-// Mobile Menu Toggle
-const menuToggle = document.getElementById('menu-toggle');
-const mainNav = document.getElementById('main-nav');
-if (menuToggle && mainNav) {
-  menuToggle.addEventListener('click', () => {
-    mainNav.classList.toggle('active');
-    const isOpened = mainNav.classList.contains('active');
-    menuToggle.innerHTML = isOpened
-      ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'
-      : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
-  });
-
-  // Close menu when clicking links
-  mainNav.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      mainNav.classList.remove('active');
-      menuToggle.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+  // Discount Ribbon Close
+  const ribbonClose = document.querySelector('.ribbon-close');
+  if (ribbonClose) {
+    ribbonClose.addEventListener('click', () => {
+      document.querySelector('.discount-ribbon').style.display = 'none';
     });
-  });
-}
-
-// Discount Ribbon Close
-const ribbonClose = document.querySelector('.ribbon-close');
-if (ribbonClose) {
-  ribbonClose.addEventListener('click', () => {
-    document.querySelector('.discount-ribbon').style.display = 'none';
-  });
-}
-
-// Cart State
-let cart = [];
-
-function updateCartUI() {
-  const cartCount = document.getElementById('cart-count');
-  const cartItemsContainer = document.getElementById('cart-items');
-  const totalPriceDisplay = document.getElementById('cart-total-price');
-
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  cartCount.textContent = totalItems;
-  cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
-
-  if (cart.length === 0) {
-    cartItemsContainer.innerHTML = '<div class="empty-cart-message">Your bag is empty.</div>';
-    totalPriceDisplay.textContent = '0 AED';
-    return;
   }
 
-  cartItemsContainer.innerHTML = cart.map(item => {
-    const p = products.find(prod => prod.id === item.id);
-    return `
+  // Cart State
+  let cart = [];
+
+  function updateCartUI() {
+    const cartCount = document.getElementById('cart-count');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const totalPriceDisplay = document.getElementById('cart-total-price');
+
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = totalItems;
+    cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+
+    if (cart.length === 0) {
+      cartItemsContainer.innerHTML = '<div class="empty-cart-message">Your bag is empty.</div>';
+      totalPriceDisplay.textContent = '0 AED';
+      return;
+    }
+
+    cartItemsContainer.innerHTML = cart.map(item => {
+      const p = products.find(prod => prod.id === item.id);
+      return `
       <div class="cart-item">
         <img src="${p.image}" alt="${p.name}">
         <div class="cart-item-details">
@@ -549,206 +554,206 @@ function updateCartUI() {
         </div>
       </div>
     `;
-  }).join('');
+    }).join('');
 
-  const total = cart.reduce((sum, item) => {
-    const p = products.find(prod => prod.id === item.id);
-    const priceNum = parseInt(p.price.replace(/[^0-9]/g, ''));
-    return sum + (priceNum * item.quantity);
-  }, 0);
+    const total = cart.reduce((sum, item) => {
+      const p = products.find(prod => prod.id === item.id);
+      const priceNum = parseInt(p.price.replace(/[^0-9]/g, ''));
+      return sum + (priceNum * item.quantity);
+    }, 0);
 
-  totalPriceDisplay.textContent = `${total.toLocaleString()} AED`;
-}
-
-window.updateQty = (id, delta) => {
-  const item = cart.find(i => i.id === id);
-  if (item) {
-    item.quantity += delta;
-    if (item.quantity <= 0) {
-      cart = cart.filter(i => i.id !== id);
-    }
-    updateCartUI();
+    totalPriceDisplay.textContent = `${total.toLocaleString()} AED`;
   }
-};
 
-window.removeFromCart = (id) => {
-  cart = cart.filter(i => i.id !== id);
-  updateCartUI();
-};
+  window.updateQty = (id, delta) => {
+    const item = cart.find(i => i.id === id);
+    if (item) {
+      item.quantity += delta;
+      if (item.quantity <= 0) {
+        cart = cart.filter(i => i.id !== id);
+      }
+      updateCartUI();
+    }
+  };
 
-document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('quick-add-btn')) {
-    const id = parseInt(e.target.dataset.id);
-    const product = products.find(p => p.id === id);
-    if (product) {
+  window.removeFromCart = (id) => {
+    cart = cart.filter(i => i.id !== id);
+    updateCartUI();
+  };
+
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('quick-add-btn')) {
+      const id = parseInt(e.target.dataset.id);
+      const product = products.find(p => p.id === id);
+      if (product) {
+        showProductDetail(product);
+      }
+    }
+  });
+
+  // Cart and Checkout Modal Logic
+  const cartModal = document.getElementById('cart-modal');
+  const cartBtn = document.getElementById('cart-btn');
+  const checkoutModal = document.getElementById('checkout-modal');
+  const checkoutBtn = document.getElementById('checkout-btn');
+
+  if (cartBtn) cartBtn.addEventListener('click', () => cartModal.classList.add('active'));
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', () => {
+      cartModal.classList.remove('active');
+      checkoutModal.classList.add('active');
+    });
+  }
+
+  document.querySelectorAll('.modal-close').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      document.getElementById(target).classList.remove('active');
+    });
+  });
+
+  // Category Filtering
+  const categoryMap = {
+    'All Creations': 'All',
+    'Boutique Rings': 'Rings',
+    'Elite Necklaces': 'Necklaces',
+    'Diamond Timepieces': 'Timepieces',
+    'Masterpiece Sets': 'Sets'
+  };
+
+  document.querySelectorAll('.category-nav a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelectorAll('.category-nav a').forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      renderProducts(categoryMap[link.innerText] || 'All');
+    });
+  });
+
+  // Initial Render removed from here as it's now inside navigateToView call chain
+
+  // Reveal on Scroll
+  function initReveal() {
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    reveals.forEach(el => observer.observe(el));
+  }
+
+  // Parallax Effect
+  window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const parallaxImgs = document.querySelectorAll('.parallax-img');
+    parallaxImgs.forEach(img => {
+      const speed = 0.4;
+      img.style.transform = `translateY(${scrolled * speed}px)`;
+    });
+  });
+
+  initReveal();
+
+  // Header scroll behavior
+  let lastScrollY = window.scrollY;
+  const header = document.querySelector('header');
+
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+
+    if (currentScrollY > 100) {
+      header.classList.add('header-scrolled');
+    } else {
+      header.classList.remove('header-scrolled');
+    }
+
+    if (currentScrollY > lastScrollY && currentScrollY > 200) {
+      // Scrolling down
+      header.classList.add('header-hidden');
+    } else {
+      // Scrolling up or at top
+      header.classList.remove('header-hidden');
+    }
+
+    lastScrollY = currentScrollY;
+  });
+
+  // Currency Selector Logic
+  const currencySelector = document.getElementById('currency-selector');
+  const currentCurrencySpan = currencySelector.querySelector('.current-currency');
+
+  currencySelector.addEventListener('click', (e) => {
+    currencySelector.classList.toggle('active');
+
+    if (e.target.classList.contains('currency-option')) {
+      const newVal = e.target.dataset.value;
+      currentCurrencySpan.textContent = newVal;
+      currencySelector.classList.remove('active');
+      // Here you could update prices based on exchange rates
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!currencySelector.contains(e.target)) {
+      currencySelector.classList.remove('active');
+    }
+  });
+
+  // Search functionality
+  const searchBtn = document.getElementById('search-btn');
+  const inlineSearch = document.getElementById('inline-search');
+
+  searchBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    inlineSearch.classList.toggle('active');
+    if (inlineSearch.classList.contains('active')) {
+      inlineSearch.focus();
+    }
+  });
+
+  inlineSearch.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      const query = inlineSearch.value;
+      if (query) {
+        alert(`Searching for: ${query}`);
+        inlineSearch.classList.remove('active');
+        inlineSearch.value = '';
+      }
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-container')) {
+      inlineSearch.classList.remove('active');
+    }
+  });
+
+  // Product detail selection UI logic
+  // We will replace the quick-add behavior with a detail modal
+  document.addEventListener('click', (e) => {
+    const productCard = e.target.closest('.product-card');
+    if (productCard && !e.target.classList.contains('quick-add-btn')) {
+      const productId = productCard.querySelector('.quick-add-btn').dataset.id;
+      const product = products.find(p => p.id == productId);
       showProductDetail(product);
     }
-  }
-});
-
-// Cart and Checkout Modal Logic
-const cartModal = document.getElementById('cart-modal');
-const cartBtn = document.getElementById('cart-btn');
-const checkoutModal = document.getElementById('checkout-modal');
-const checkoutBtn = document.getElementById('checkout-btn');
-
-if (cartBtn) cartBtn.addEventListener('click', () => cartModal.classList.add('active'));
-if (checkoutBtn) {
-  checkoutBtn.addEventListener('click', () => {
-    cartModal.classList.remove('active');
-    checkoutModal.classList.add('active');
   });
-}
 
-document.querySelectorAll('.modal-close').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const target = btn.dataset.target;
-    document.getElementById(target).classList.remove('active');
-  });
-});
-
-// Category Filtering
-const categoryMap = {
-  'All Creations': 'All',
-  'Boutique Rings': 'Rings',
-  'Elite Necklaces': 'Necklaces',
-  'Diamond Timepieces': 'Timepieces',
-  'Masterpiece Sets': 'Sets'
-};
-
-document.querySelectorAll('.category-nav a').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.querySelectorAll('.category-nav a').forEach(l => l.classList.remove('active'));
-    link.classList.add('active');
-    renderProducts(categoryMap[link.innerText] || 'All');
-  });
-});
-
-// Initial Render removed from here as it's now inside navigateToView call chain
-
-// Reveal on Scroll
-function initReveal() {
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-      }
-    });
-  }, { threshold: 0.1 });
-
-  reveals.forEach(el => observer.observe(el));
-}
-
-// Parallax Effect
-window.addEventListener('scroll', () => {
-  const scrolled = window.pageYOffset;
-  const parallaxImgs = document.querySelectorAll('.parallax-img');
-  parallaxImgs.forEach(img => {
-    const speed = 0.4;
-    img.style.transform = `translateY(${scrolled * speed}px)`;
-  });
-});
-
-initReveal();
-
-// Header scroll behavior
-let lastScrollY = window.scrollY;
-const header = document.querySelector('header');
-
-window.addEventListener('scroll', () => {
-  const currentScrollY = window.scrollY;
-
-  if (currentScrollY > 100) {
-    header.classList.add('header-scrolled');
-  } else {
-    header.classList.remove('header-scrolled');
-  }
-
-  if (currentScrollY > lastScrollY && currentScrollY > 200) {
-    // Scrolling down
-    header.classList.add('header-hidden');
-  } else {
-    // Scrolling up or at top
-    header.classList.remove('header-hidden');
-  }
-
-  lastScrollY = currentScrollY;
-});
-
-// Currency Selector Logic
-const currencySelector = document.getElementById('currency-selector');
-const currentCurrencySpan = currencySelector.querySelector('.current-currency');
-
-currencySelector.addEventListener('click', (e) => {
-  currencySelector.classList.toggle('active');
-
-  if (e.target.classList.contains('currency-option')) {
-    const newVal = e.target.dataset.value;
-    currentCurrencySpan.textContent = newVal;
-    currencySelector.classList.remove('active');
-    // Here you could update prices based on exchange rates
-  }
-});
-
-document.addEventListener('click', (e) => {
-  if (!currencySelector.contains(e.target)) {
-    currencySelector.classList.remove('active');
-  }
-});
-
-// Search functionality
-const searchBtn = document.getElementById('search-btn');
-const inlineSearch = document.getElementById('inline-search');
-
-searchBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  inlineSearch.classList.toggle('active');
-  if (inlineSearch.classList.contains('active')) {
-    inlineSearch.focus();
-  }
-});
-
-inlineSearch.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') {
-    const query = inlineSearch.value;
-    if (query) {
-      alert(`Searching for: ${query}`);
-      inlineSearch.classList.remove('active');
-      inlineSearch.value = '';
+  function showProductDetail(product) {
+    // Create a detail modal on the fly or reuse one
+    let detailModal = document.getElementById('product-detail-modal');
+    if (!detailModal) {
+      detailModal = document.createElement('div');
+      detailModal.id = 'product-detail-modal';
+      detailModal.className = 'modal-overlay';
+      document.body.appendChild(detailModal);
     }
-  }
-});
 
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.search-container')) {
-    inlineSearch.classList.remove('active');
-  }
-});
-
-// Product detail selection UI logic
-// We will replace the quick-add behavior with a detail modal
-document.addEventListener('click', (e) => {
-  const productCard = e.target.closest('.product-card');
-  if (productCard && !e.target.classList.contains('quick-add-btn')) {
-    const productId = productCard.querySelector('.quick-add-btn').dataset.id;
-    const product = products.find(p => p.id == productId);
-    showProductDetail(product);
-  }
-});
-
-function showProductDetail(product) {
-  // Create a detail modal on the fly or reuse one
-  let detailModal = document.getElementById('product-detail-modal');
-  if (!detailModal) {
-    detailModal = document.createElement('div');
-    detailModal.id = 'product-detail-modal';
-    detailModal.className = 'modal-overlay';
-    document.body.appendChild(detailModal);
-  }
-
-  detailModal.innerHTML = `
+    detailModal.innerHTML = `
     <div class="modal-content product-detail-content">
       <span class="modal-close" onclick="document.getElementById('product-detail-modal').classList.remove('active')">&times;</span>
       <div class="detail-grid">
@@ -785,31 +790,37 @@ function showProductDetail(product) {
     </div>
   `;
 
-  detailModal.classList.add('active');
+    detailModal.classList.add('active');
 
-  // Add option button logic
-  detailModal.querySelectorAll('.option-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-      this.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
+    // Add option button logic
+    detailModal.querySelectorAll('.option-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        this.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
     });
-  });
-}
-
-window.addToBagFromDetail = (id) => {
-  const existing = cart.find(i => i.id === id);
-  if (existing) {
-    existing.quantity += 1;
-  } else {
-    cart.push({ id, quantity: 1 });
   }
-  updateCartUI();
-  document.getElementById('product-detail-modal').classList.remove('active');
-  document.getElementById('cart-modal').classList.add('active');
-};
 
-window.buyItNow = (id) => {
-  addToBagFromDetail(id);
-  document.getElementById('cart-modal').classList.remove('active');
-  document.getElementById('checkout-modal').classList.add('active');
-};
+  window.addToBagFromDetail = (id) => {
+    const existing = cart.find(i => i.id === id);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({ id, quantity: 1 });
+    }
+    updateCartUI();
+    document.getElementById('product-detail-modal').classList.remove('active');
+    document.getElementById('cart-modal').classList.add('active');
+  };
+
+  window.buyItNow = (id) => {
+    addToBagFromDetail(id);
+    document.getElementById('cart-modal').classList.remove('active');
+    document.getElementById('checkout-modal').classList.add('active');
+  };
+
+} catch (error) {
+  console.error('Critical App Error:', error);
+  alert('Critical Error: ' + error.message);
+  document.querySelector('#app').innerHTML = '<div style="padding: 20px; color: red;"><h1>Failed to load app</h1><pre>' + error.stack + '</pre></div>';
+}
