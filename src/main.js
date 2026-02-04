@@ -1930,8 +1930,6 @@ window.openProductModal = (product = null) => {
   };
 
   window.removeGalleryItem = (index) => {
-    const item = galleryItems[index];
-    if (item instanceof File) URL.revokeObjectURL(src); // Cleanup
     galleryItems.splice(index, 1);
     updateGalleryUI();
   };
@@ -1994,8 +1992,8 @@ window.openProductModal = (product = null) => {
         if (item instanceof File) {
           // Official Supabase Storage Upload
           const fileExt = item.name.split('.').pop();
-          const fileName = `${Math.random().toString(36).substring(2)} -${Date.now()}.${fileExt} `;
-          const filePath = `products / ${fileName} `;
+          const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+          const filePath = `products/${fileName}`;
 
           const { data: uploadData, error: uploadError } = await supabase.storage
             .from('product-images')
