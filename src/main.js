@@ -1033,24 +1033,25 @@ function updateCartUI() {
     return;
   }
 
-  cartItemsContainer.innerHTML = cart.map(item => {
+  cartItemsContainer.innerHTML = cart.map((item, index) => {
     const p = productsState.find(prod => prod.id === item.id);
     return `
-      < div class="cart-item" >
+      <div class="cart-item">
         <img src="${p.image}" alt="${p.name}">
-          <div class="cart-item-details">
-            <h4>${p.name}</h4>
-            <span class="cart-item-price">${p.price}</span>
-            <div class="cart-controls">
-              <div class="quantity-control">
-                <button class="quantity-btn" onclick="updateQty(${item.id}, -1)">-</button>
-                <span class="quantity-display">${item.quantity}</span>
-                <button class="quantity-btn" onclick="updateQty(${item.id}, 1)">+</button>
-              </div>
-              <button class="remove-btn" onclick="removeFromCart(${item.id})">Remove</button>
+        <div class="cart-item-details">
+          <h4>${p.name}</h4>
+          <p class="cart-item-meta">${item.size ? `Size: ${item.size}` : ''} ${item.material ? `| ${item.material}` : ''}</p>
+          <span class="cart-item-price">${p.price}</span>
+          <div class="cart-controls">
+            <div class="quantity-control">
+              <button class="quantity-btn" onclick="updateQty(${index}, -1)">-</button>
+              <span class="quantity-display">${item.quantity}</span>
+              <button class="quantity-btn" onclick="updateQty(${index}, 1)">+</button>
             </div>
+            <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
           </div>
         </div>
+      </div>
     `;
   }).join('');
 
@@ -1063,19 +1064,19 @@ function updateCartUI() {
   totalPriceDisplay.textContent = `${total.toLocaleString()} AED`;
 }
 
-window.updateQty = (id, delta) => {
-  const item = cart.find(i => i.id === id);
+window.updateQty = (index, delta) => {
+  const item = cart[index];
   if (item) {
     item.quantity += delta;
     if (item.quantity <= 0) {
-      cart = cart.filter(i => i.id !== id);
+      cart.splice(index, 1);
     }
     updateCartUI();
   }
 };
 
-window.removeFromCart = (id) => {
-  cart = cart.filter(i => i.id !== id);
+window.removeFromCart = (index) => {
+  cart.splice(index, 1);
   updateCartUI();
 };
 
@@ -1252,11 +1253,11 @@ function showProductDetail(product) {
   }
 
   detailModal.innerHTML = `
-      < div class="modal-content product-detail-content" >
+    <div class="modal-content product-detail-content">
       <span class="modal-close" onclick="document.getElementById('product-detail-modal').classList.remove('active')">&times;</span>
       <div class="detail-grid">
         <div class="detail-image">
-          <img src="${product.image}" alt="${product.name}" style="${product.style}">
+          <img src="${product.image}" alt="${product.name}" style="${product.style || ''}">
         </div>
         <div class="detail-info">
           <h2>${product.name}</h2>
@@ -1265,17 +1266,17 @@ function showProductDetail(product) {
           
           <div class="selection-group">
             <label>Ring Size</label>
-            <div class="size-options">
-              ${[5, 5.5, 6, 6.5, 7, 7.5, 8].map(s => `<button class="option-btn">${s}</button>`).join('')}
+            <div class="size-options" id="detail-size-options">
+              ${(product.attributes && product.attributes.available_sizes ? product.attributes.available_sizes : [5, 5.5, 6, 6.5, 7, 7.5, 8]).map(s => `<button class="option-btn" data-value="${s}">${s}</button>`).join('')}
             </div>
           </div>
 
           <div class="selection-group">
             <label>Material</label>
-            <div class="material-options">
-              <button class="option-btn active">18K White Gold</button>
-              <button class="option-btn">Platinum</button>
-              <button class="option-btn">Rose Gold</button>
+            <div class="material-options" id="detail-material-options">
+              <button class="option-btn active" data-value="18K White Gold">18K White Gold</button>
+              <button class="option-btn" data-value="Platinum">Platinum</button>
+              <button class="option-btn" data-value="Rose Gold">Rose Gold</button>
             </div>
           </div>
 
@@ -1285,8 +1286,8 @@ function showProductDetail(product) {
           </div>
         </div>
       </div>
-    </div >
-      `;
+    </div>
+  `;
 
   detailModal.classList.add('active');
 
@@ -1300,14 +1301,23 @@ function showProductDetail(product) {
 }
 
 window.addToBagFromDetail = (id) => {
-  const existing = cart.find(i => i.id === id);
+  const modal = document.getElementById('product-detail-modal');
+  const selectedSize = modal.querySelector('#detail-size-options .option-btn.active')?.dataset.value;
+  const selectedMaterial = modal.querySelector('#detail-material-options .option-btn.active')?.dataset.value;
+
+  if (!selectedSize && document.querySelector('#detail-size-options')) {
+    alert('Please select a size.');
+    return;
+  }
+
+  const existing = cart.find(i => i.id === id && i.size === selectedSize && i.material === selectedMaterial);
   if (existing) {
     existing.quantity += 1;
   } else {
-    cart.push({ id, quantity: 1 });
+    cart.push({ id, quantity: 1, size: selectedSize, material: selectedMaterial });
   }
   updateCartUI();
-  document.getElementById('product-detail-modal').classList.remove('active');
+  modal.classList.remove('active');
   document.getElementById('cart-modal').classList.add('active');
 };
 
@@ -1783,7 +1793,7 @@ window.openProductModal = (product = null) => {
                 <div class="dropzone-content">
                   <span class="drop-icon">✧</span>
                   <p>Görselleri buraya sürükleyin veya göz atmak için tıklayın</p>
-                  <small>Desteklenen: JPG, PNG, WEBP (Maksimum 5MB)</small>
+                  <small>Desteklenen: JPG, PNG, WEBP (Yüksek Çözünürlük Desteklenir)</small>
                 </div>
                 <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
               </div>
@@ -1818,11 +1828,15 @@ window.openProductModal = (product = null) => {
       fields = `
       <div class="form-row-elite">
           <div class="form-group">
-            <label>Yüzük Ölçüsü (US)</label>
-            <select id="attr-ring-size">
-              <option value="">Ölçü Seçin</option>
-              ${[4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13].map(s => `<option value="${s}" ${attrs.ring_size == s ? 'selected' : ''}>US ${s}</option>`).join('')}
-            </select>
+            <label>Müsait Yüzük Ölçüleri (US) *</label>
+            <div class="checkbox-group-elite" id="attr-available-sizes" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-height: 150px; overflow-y: auto; padding: 10px; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px;">
+              ${[4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13].map(s => `
+                <label style="display: flex; align-items: center; gap: 5px; font-size: 12px; cursor: pointer;">
+                  <input type="checkbox" value="${s}" ${attrs.available_sizes && attrs.available_sizes.includes(s.toString()) ? 'checked' : ''}> US ${s}
+                </label>
+              `).join('')}
+            </div>
+            <small style="display: block; margin-top: 5px; color: #666;">Stokta olan tüm bedenleri işaretleyin.</small>
           </div>
           <div class="form-group">
             <label>Değerli Metal Türü</label>
@@ -1975,11 +1989,22 @@ window.openProductModal = (product = null) => {
     if (attrContainer) {
       const inputs = attrContainer.querySelectorAll('input, select');
       inputs.forEach(input => {
-        if (input.value) {
+        if (input.type === 'checkbox' && input.closest('#attr-available-sizes')) {
+          // Skip here, handled specifically below
+        } else if (input.value) {
           const key = input.id.replace('attr-', '').replace(/-/g, '_');
           attributes[key] = input.value;
         }
       });
+
+      // Special handling for available sizes checkboxes
+      const sizeContainer = document.getElementById('attr-available-sizes');
+      if (sizeContainer) {
+        const checkedSizes = Array.from(sizeContainer.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+        if (checkedSizes.length > 0) {
+          attributes['available_sizes'] = checkedSizes;
+        }
+      }
     }
 
     submitBtn.textContent = 'Uploading Assets...';

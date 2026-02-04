@@ -49,6 +49,20 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Custom Scrollbar - Elite & Aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--secondary-gold);
+  border-radius: 3px;
+}
+
 h1,
 h2,
 h3,
@@ -361,93 +375,112 @@ header.header-scrolled .logo-subtitle {
     visibility: visible;
   }
 
+  /* Full Screen Luxury Mobile Menu */
   #main-nav {
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 0;
     left: 0;
     width: 100%;
+    height: 100vh;
     background: var(--bg-cream);
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.4s ease;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-100%);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 2000;
+    border-top: none;
+    max-height: none;
+    padding-top: 0;
+    opacity: 0;
+    pointer-events: none;
   }
 
   #main-nav.active {
-    max-height: 600px;
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+    max-height: none;
+  }
+
+  /* Close button positioning */
+  .menu-close-header {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: auto;
+    padding: 0;
+    z-index: 2001;
+  }
+
+  .menu-close-btn {
+    font-size: 40px;
+    color: var(--primary-navy);
+    line-height: 1;
+    opacity: 0.8;
   }
 
   #main-nav ul {
     flex-direction: column;
-    padding: 30px 5%;
-    gap: 20px;
+    padding: 0;
+    gap: 30px;
+    text-align: center;
   }
 
   #main-nav ul li a {
-    font-size: 14px;
-    padding: 12px 25px;
-    background: var(--secondary-gold);
-    color: white;
-    border-radius: 4px;
-    /* More modern, sharper corners */
-    text-align: center;
-    font-weight: 500;
-    letter-spacing: 0.15em;
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    padding: 10px;
+    background: none;
+    /* Remove box */
+    color: var(--primary-navy);
+    border-radius: 0;
+    box-shadow: none;
+    width: auto;
+    display: inline-block;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    box-shadow: 0 4px 15px rgba(197, 160, 89, 0.15);
+    font-weight: 400;
+    /* Lighter for elegance */
+    transform: translateY(20px);
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  /* Stagger animation for menu items */
+  #main-nav.active ul li a {
     opacity: 1;
-    width: 160px;
-    /* Consistent button width */
-    display: block;
-    margin: 0 auto;
-    transition: transform 0.3s ease;
+    transform: translateY(0);
+  }
+
+  #main-nav ul li:nth-child(1) a {
+    transition-delay: 0.1s;
+  }
+
+  #main-nav ul li:nth-child(2) a {
+    transition-delay: 0.15s;
+  }
+
+  #main-nav ul li:nth-child(3) a {
+    transition-delay: 0.2s;
+  }
+
+  #main-nav ul li:nth-child(4) a {
+    transition-delay: 0.25s;
+  }
+
+  #main-nav ul li:nth-child(5) a {
+    transition-delay: 0.3s;
+  }
+
+  #main-nav ul li:nth-child(6) a {
+    transition-delay: 0.35s;
   }
 
   #main-nav ul li a:active {
-    transform: scale(0.98);
-  }
-
-  /* Close Icon styling for mobile menu */
-  .menu-close-header {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    padding: 10px 20px;
-  }
-
-  .menu-close-btn {
-    background: none;
-    border: none;
-    color: var(--primary-navy);
-    font-size: 24px;
-    cursor: pointer;
-  }
-
-  header {
-    height: 80px;
-    padding: 0 15px;
-  }
-
-  .logo-text {
-    font-size: 42px;
-  }
-
-  .mobile-hidden {
-    display: none !important;
-  }
-
-  .desktop-hidden {
-    display: flex !important;
-  }
-
-  .header-left,
-  .header-right {
-    gap: 15px;
-  }
-
-  .sior-logo {
-    margin-right: 0;
+    transform: scale(0.95);
+    color: var(--secondary-gold);
   }
 }
 
@@ -470,7 +503,7 @@ header.header-scrolled .logo-subtitle {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../public/red-veil-hero.png');
+  background-image: url('/red-veil-hero.png');
   background-size: cover;
   background-position: center 20%;
   transform: scale(1.1);
@@ -478,18 +511,25 @@ header.header-scrolled .logo-subtitle {
 }
 
 @media (max-width: 480px) {
-  .hero {
-    height: 100dvh;
-    /* Fill entire screen for "Tam Ekran" experience */
-    min-height: auto;
+  .hero-bg {
+    background-image: url('/red-veil-hero.png');
+    /* Fix path */
+    background-position: center center;
+    background-size: contain;
+    /* Ensure whole image fits */
+    background-repeat: no-repeat;
+    transform: none;
+    height: 100%;
+    width: 100%;
   }
 
-  .hero-bg {
-    background-position: 25% center;
-    /* Focus on the face/eyes instead of just the fabric */
-    background-size: cover;
-    transform: scale(1.05);
-    /* Slight zoom for premium feel */
+  .hero {
+    /* Allow height to adjust or keep fixed but ensure bg fits */
+    height: 60vh;
+    /* Reduce height on mobile to fit image better */
+    min-height: auto;
+    background-color: #550505;
+    /* Match distinct deep red from image to fill gaps */
   }
 
   .hero-content {
