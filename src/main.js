@@ -2,8 +2,25 @@ import './style.css'
 import { createClient } from '@supabase/supabase-js'
 
 // Supabase Initialization
+// Supabase Initialization
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Supabase credentials missing!');
+  document.body.innerHTML = `
+    <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#f8f5f2; color:#3a516c; font-family:sans-serif; text-align:center; padding:20px;">
+      <h1 style="font-size:2rem; margin-bottom:10px;">Configuration Error</h1>
+      <p style="font-size:1.2rem;">Connection to the vault (Supabase) is missing.</p>
+      <p style="font-size:0.9rem; margin-top:20px; color:#666;">
+        Please ensure <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> <br>
+        are set in your repository Secrets or .env file.
+      </p>
+    </div>
+  `;
+  throw new Error('Supabase credentials missing');
+}
+
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Base URL for assets
