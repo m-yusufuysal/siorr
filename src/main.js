@@ -235,7 +235,9 @@ document.querySelector('#app').innerHTML = `
         <h4>ABOUT</h4>
         <ul>
           <li><a href="#" id="contact-link-footer">Contact Us</a></li>
-          <li><a href="#" data-view="faq">FAQ</a></li>
+          <li><a href="#" data-view="faq" class="view-link">FAQ</a></li>
+          <li><a href="#" data-view="shipping" class="view-link">Shipping</a></li>
+          <li><a href="#" data-view="privacy" class="view-link">Privacy Policy</a></li>
         </ul>
       </div>
       <div class="footer-col">
