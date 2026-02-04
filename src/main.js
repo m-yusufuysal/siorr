@@ -621,6 +621,10 @@ function navigateToView(viewId) {
             <p>Moissanite is a rare, naturally occurring mineral that we masterfully recreate in labs. It possesses more fire and brilliance than a diamond and is exceptionally durable for daily wear.</p>
           </div>
           <div class="faq-item">
+            <h3>Is Sior jewelry ethically sourced and certified?</h3>
+            <p>Absolutely. Every Sior masterpiece is crafted using lab-grown moissanite and recycled noble metals, ensuring a conflict-free and environmentally conscious legacy. Each piece is accompanied by a GIA or Sior Authenticity Card, guaranteeing the uncompromising quality and provenance of your selection.</p>
+          </div>
+          <div class="faq-item">
             <h3>Can I visit a boutique?</h3>
             <p>We operate exclusive private viewing suites in Dubai, London, and New York. Appointments can be requested through our "Boutique Appointment" modal.</p>
           </div>
@@ -861,6 +865,10 @@ window.openInfoModal = (type) => {
         <div class="faq-item">
           <h3>What is Moissanite?</h3>
           <p>Moissanite is a rare, naturally occurring mineral that we masterfully recreate in labs. It possesses more fire and brilliance than a diamond.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Is Sior jewelry ethically sourced and certified?</h3>
+          <p>Absolutely. Every Sior masterpiece is crafted using lab-grown moissanite and recycled noble metals, ensuring a conflict-free and environmentally conscious legacy. Each piece is accompanied by a GIA or Sior Authenticity Card, guaranteeing the uncompromising quality and provenance of your selection.</p>
         </div>
         <div class="faq-item">
           <h3>What is your warranty?</h3>
