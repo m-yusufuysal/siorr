@@ -135,7 +135,7 @@ function initApp() {
 
   // Handle /admin routing
   const path = window.location.pathname;
-  if (path === '/admin' || window.location.hash === '#admin') {
+  if (path.endsWith('/admin') || window.location.hash === '#admin') {
     navigateToView('admin-login');
   } else {
     navigateToView('home');
@@ -210,8 +210,6 @@ document.querySelector('#app').innerHTML = `
   </header>
 
    <main id="main-content">
-    <!-- Content dynamically injected here -->
-  </main>
     <!-- Content dynamically injected here -->
   </main>
 
@@ -477,7 +475,7 @@ async function renderProducts(category = 'All', targetId = 'product-grid') {
     <div class="product-card reveal">
       <div class="product-image">
         <img src="${p.image}" alt="${p.name}" 
-             onerror="this.src='/ring.png'; this.style.mixBlendMode='normal';"
+             onerror="this.src='${getAssetPath('/ring.png')}'; this.style.mixBlendMode='normal';"
              style="${p.style || ''}" 
              loading="lazy">
         <button class="quick-add-btn" data-id="${p.id}">ADD TO BAG</button>
