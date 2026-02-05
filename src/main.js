@@ -1352,24 +1352,7 @@ window.buyItNow = (id) => {
 window.loadDashboardTab = loadDashboardTab;
 loadDashboardTab('home');
 
-// Mobile Menu Toggle Logic
-const toggleBtn = document.getElementById('admin-mobile-toggle');
-const sidebar = document.getElementById('admin-sidebar');
-
-if (toggleBtn && sidebar) {
-  toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-  });
-
-  // Close sidebar when clicking a link on mobile
-  sidebar.querySelectorAll('.sidebar-link').forEach(link => {
-    link.addEventListener('click', () => {
-      if (window.innerWidth <= 768) {
-        sidebar.classList.remove('active');
-      }
-    });
-  });
-}
+// Mobile Menu Toggle Logic Moved inside navigateToView function
 
 window.logoutAdmin = () => {
   localStorage.removeItem('sior_admin');
