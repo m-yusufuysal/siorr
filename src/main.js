@@ -442,13 +442,48 @@ async function renderProducts(category = 'All', targetId = 'product-grid') {
   const grid = document.getElementById(targetId) || document.querySelector('.product-grid');
   if (!grid) return;
 
-  // Elite Skeleton Loaders
-  grid.innerHTML = Array(4).fill(0).map(() => `
-    <div class="skeleton-card">
-      <div class="skeleton-shimmer"></div>
-    </div>
-  `).join('');
+  // OPTIMISTIC RENDER: Render cached state immediately if available
+  // This prevents the "slow load" feeling on mobile
+  const renderItems = (items) => {
+    grid.innerHTML = items.map(p => `
+      <div class="product-card reveal">
+        <div class="product-image">
+          <img src="${p.image}" alt="${p.name}" 
+               onerror="this.src='${getAssetPath('/ring.png')}'; this.style.mixBlendMode='normal';"
+               style="${p.style || ''}" 
+               loading="lazy">
+          <button class="quick-add-btn" data-id="${p.id}">ADD TO BAG</button>
+        </div>
+        <div class="product-info">
+          <h3>${p.name}</h3>
+          <p>${p.material || 'Fine Jewelry'}</p>
+          <div class="product-price">${formatCurrency(p.price)}</div>
+        </div>
+      </div>
+    `).join('');
+    if (typeof initReveal === 'function') initReveal();
+  };
 
+  // 1. If we have data, show it immediately (optimistic UI)
+  if (productsState.length > 0 && category === 'All') {
+    // If filtering, we might need to filter locally first for speed
+    if (category === 'All') {
+      renderItems(productsState);
+    } else {
+      const localFiltered = productsState.filter(p => p.category === category);
+      if (localFiltered.length > 0) renderItems(localFiltered);
+      else grid.innerHTML = Array(4).fill(0).map(() => `<div class="skeleton-card"><div class="skeleton-shimmer"></div></div>`).join('');
+    }
+  } else {
+    // Only show skeletons if we have absolutely nothing
+    grid.innerHTML = Array(4).fill(0).map(() => `
+      <div class="skeleton-card">
+        <div class="skeleton-shimmer"></div>
+      </div>
+    `).join('');
+  }
+
+  // 2. Fetch fresh data from Supabase in background
   let query = supabase.from('products').select('*').eq('status', 'active').order('id', { ascending: false });
   if (category !== 'All') {
     query = query.eq('category', category);
@@ -458,10 +493,14 @@ async function renderProducts(category = 'All', targetId = 'product-grid') {
 
   if (error) {
     console.error('Error fetching products:', error);
-    grid.innerHTML = '<div class="error">The vault is temporarily unavailable.</div>';
+    // If we have nothing shown yet, show error. If we showed stale data, keep showing it but maybe warn console
+    if (grid.innerHTML.includes('skeleton-card')) {
+      grid.innerHTML = '<div class="error">The vault is temporarily unavailable.</div>';
+    }
     return;
   }
 
+  // 3. Process and Re-render with Fresh Data
   productsState = data.map(p => {
     let img = '/ring.png';
     let imgList = p.image_url;
@@ -488,22 +527,9 @@ async function renderProducts(category = 'All', targetId = 'product-grid') {
     };
   });
 
-  grid.innerHTML = productsState.map(p => `
-    <div class="product-card reveal">
-      <div class="product-image">
-        <img src="${p.image}" alt="${p.name}" 
-             onerror="this.src='${getAssetPath('/ring.png')}'; this.style.mixBlendMode='normal';"
-             style="${p.style || ''}" 
-             loading="lazy">
-        <button class="quick-add-btn" data-id="${p.id}">ADD TO BAG</button>
-      </div>
-      <div class="product-info">
-        <h3>${p.name}</h3>
-        <p>${p.material || 'Fine Jewelry'}</p>
-        <div class="product-price">${formatCurrency(p.price)}</div>
-      </div>
-    </div>
-  `).join('');
+  renderItems(productsState);
+  const countEl = document.getElementById('product-count');
+  if (countEl) countEl.textContent = productsState.length;
 
   if (typeof initReveal === 'function') initReveal();
   const countEl = document.getElementById('product-count');
@@ -777,8 +803,10 @@ function navigateToView(viewId) {
       </button>
       <aside class="admin-sidebar" id="admin-sidebar">
         <div class="sidebar-logo">
-          <img src="${getAssetPath('/logo.png')}" alt="Sior Logo" class="admin-logo-img">
-          <div class="logo-subtitle">Elite Craftsmanship</div>
+          <div class="sior-logo">
+            <span class="logo-text" style="color: var(--secondary-gold); font-size: 48px; margin-top: 0;">Sior</span>
+            <span class="logo-subtitle" style="color: rgba(255, 255, 255, 0.6);">Elite Craftsmanship</span>
+          </div>
         </div>
         <nav class="sidebar-nav">
           <div class="sidebar-section">
