@@ -1673,10 +1673,37 @@ async function loadDashboardTab(tabId) {
           <div class="form-group-elite"><label>Google Tag Manager</label><input type="text" placeholder="GTM-XXXXXX"></div>
           <button class="btn-submit-elite" onclick="alert('Ayarlar kaydedildi')">Entegrasyonları Kaydet</button>
         </div>
+        
+        <div class="settings-card-elite">
+          <h3>Sistem Testleri</h3>
+          <p style="font-size: 0.9em; opacity: 0.8; margin-bottom: 15px;">Bildirimlerin cihazınızda çalıştığını doğrulayın.</p>
+          <button class="btn-submit-elite" onclick="window.testNotification()">🔔 Test Bildirimi Gönder</button>
+          <p style="font-size: 0.8em; margin-top: 10px; color: #666;">Not: Bildirimler için tarayıcı izni gereklidir.</p>
+        </div>
       </div>
       `;
   }
 }
+
+window.testNotification = async () => {
+  if (!('Notification' in window)) {
+    return Toast.show('Bu cihaz bildirimleri desteklemiyor.', 'error');
+  }
+
+  if (Notification.permission === 'default') {
+    await Notification.requestPermission();
+  }
+
+  if (Notification.permission === 'granted') {
+    new Notification('Sior Sistem Testi', {
+      body: 'Bildirimler başarıyla çalışıyor! 💎',
+      icon: '/logo-new.png'
+    });
+    Toast.show('Bildirim gönderildi.', 'success');
+  } else {
+    Toast.show('Bildirim izni verilmedi. Lütfen tarayıcı ayarlarını kontrol edin.', 'error');
+  }
+};
 
 async function renderAdminProducts(filteredData = null) {
   const list = document.getElementById('admin-product-list');
