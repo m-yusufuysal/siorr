@@ -2424,3 +2424,29 @@ window.viewCustomer = async (id) => {
 };
 
 // End of file
+
+// GLOBAL EVENT DELEGATION for Admin Mobile Toggle
+document.addEventListener('click', (e) => {
+  const toggleBtn = e.target.closest('#admin-mobile-toggle');
+  const sidebar = document.getElementById('admin-sidebar');
+
+  // Open/Close via Toggle Button
+  if (toggleBtn && sidebar) {
+    e.stopPropagation();
+    sidebar.classList.toggle('active');
+    console.log('Mobile menu toggled via delegation');
+    return;
+  }
+
+  // Close when clicking outside (Overlay logic)
+  if (sidebar && sidebar.classList.contains('active')) {
+    if (!sidebar.contains(e.target) && !e.target.closest('#admin-mobile-toggle')) {
+      sidebar.classList.remove('active');
+    }
+  }
+
+  // Close when clicking a sidebar link
+  if (e.target.closest('.sidebar-link') && sidebar && window.innerWidth <= 768) {
+    sidebar.classList.remove('active');
+  }
+});
