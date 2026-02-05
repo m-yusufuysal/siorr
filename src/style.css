@@ -2372,6 +2372,8 @@ body:has(.admin-shell) {
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    /* Enable scrolling for long menus */
   }
 
   .admin-sidebar.active {
@@ -2386,8 +2388,12 @@ body:has(.admin-shell) {
   /* Adjust Main Panel */
   .admin-main-panel {
     padding: 70px 20px 30px;
-    /* Top padding for toggle button */
     width: 100%;
+    height: auto !important;
+    /* Allow natural growth */
+    min-height: 100vh;
+    overflow-y: visible !important;
+    /* Use body scroll */
   }
 
   /* Stack Grids */
