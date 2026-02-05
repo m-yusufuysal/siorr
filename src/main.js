@@ -417,15 +417,24 @@ document.addEventListener('submit', async (e) => {
 });
 
 // Initial Product Data
-productsState = [
-  { id: 1, name: 'Eternal Sparkle Ring', category: 'Rings', price: '18,500 AED', material: '18k White Gold | VVS Diamonds', image: getAssetPath('/ring.png'), style: '' },
-  { id: 2, name: 'Golden Dawn Solitaire', category: 'Rings', price: '22,400 AED', material: 'Rose Gold | Rare Pink Diamond', image: getAssetPath('/ring.png'), style: '' },
-  { id: 3, name: 'Midnight Noir Band', category: 'Rings', price: '9,800 AED', material: 'Black Gold | Polished Onyx', image: getAssetPath('/ring.png'), style: '' },
-  { id: 4, name: 'Celestial Halo Emerald', category: 'Rings', price: '28,900 AED', material: 'Platinum | Colombian Emerald', image: getAssetPath('/ring.png'), style: '' },
-  { id: 5, name: 'Elite Diamond Choker', category: 'Necklaces', price: '45,000 AED', material: 'Platinum | 5ct Round Diamonds', image: getAssetPath('/ring.png'), style: '' },
-  { id: 6, name: 'Royal Sapphire Pendant', category: 'Necklaces', price: '32,000 AED', material: '18k White Gold | Ceylon Sapphire', image: getAssetPath('/ring.png'), style: '' },
-  { id: 7, name: 'Masterpiece Chrono', category: 'Timepieces', price: '120,000 AED', material: 'Titanium | Diamond Bezel', image: getAssetPath('/ring.png'), style: '' },
-];
+// Global state for products
+// CACHE-FIRST POINTER: Load from local storage if available for instant mobile speed
+let productsState = [];
+try {
+  const cached = localStorage.getItem('sior_products_cache');
+  if (cached) {
+    productsState = JSON.parse(cached);
+  } else {
+    // Fallback dummies only if absolutely no cache
+    productsState = [
+      { id: 1, name: 'Eternal Sparkle Ring', category: 'Rings', price: '18,500 AED', material: '18k White Gold | VVS Diamonds', image: getAssetPath('/ring.png'), style: '' },
+      { id: 2, name: 'Golden Dawn Solitaire', category: 'Rings', price: '22,400 AED', material: 'Rose Gold | Rare Pink Diamond', image: getAssetPath('/ring.png'), style: '' }
+    ];
+  }
+} catch (e) {
+  console.warn('Cache parse error', e);
+  productsState = [];
+}
 
 // Helper to format currency elegantly
 function formatCurrency(amount) {
@@ -526,6 +535,9 @@ async function renderProducts(category = 'All', targetId = 'product-grid') {
       image: img.startsWith('http') || img.startsWith('data') ? img : getAssetPath(img)
     };
   });
+
+  // Update Cache for next visit
+  localStorage.setItem('sior_products_cache', JSON.stringify(productsState));
 
   renderItems(productsState);
   const countEl = document.getElementById('product-count');
