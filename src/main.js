@@ -419,7 +419,6 @@ document.addEventListener('submit', async (e) => {
 // Initial Product Data
 // Global state for products
 // CACHE-FIRST POINTER: Load from local storage if available for instant mobile speed
-let productsState = [];
 try {
   const cached = localStorage.getItem('sior_products_cache');
   if (cached) {
