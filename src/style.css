@@ -2384,8 +2384,32 @@ body:has(.admin-shell) {
 @media (max-width: 768px) {
   .admin-shell {
     display: block !important;
-    /* Stack instead of flex */
     position: relative;
+    height: auto !important;
+    /* Fix scroll */
+    min-height: 100vh;
+    overflow-y: visible !important;
+    /* Fix scroll */
+    overflow-x: hidden;
+  }
+
+  /* Show the toggle button */
+  #admin-mobile-toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 6000;
+    /* Ensure strictly above everything */
+    background: var(--secondary-gold);
+    color: var(--white);
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   }
 
   /* Sidebar hidden by default */
