@@ -396,16 +396,20 @@ document.addEventListener('submit', async (e) => {
     }]);
 
     if (error) {
-      alert('Checkout Failed: ' + error.message);
+      Toast.show('Checkout Failed: ' + error.message, 'error');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Pay Now';
     } else {
-      // Simulate Order Success Notification & Email
-      console.log(`[SIMULATED EMAIL SENT TO ${customerEmail}]`);
-      console.log(`Subject: Your Sior Elite Order Confirmation (#${Date.now().toString().slice(-6)})`);
-      console.log(`Content: Thank you for your purchase of ${totalPrice}. Your items are being prepared for express delivery.`);
+      // Flawless Success Feedback
+      Toast.show('Siparişiniz Başarıyla Alındı! ✨', 'success');
 
-      alert(`✨ Order Placed Successfully!\n\nA confirmation email has been sent to ${customerEmail}.\nTotal: ${totalPrice}\nRef: ${ref || 'direct'}\n\nThank you for choosing Sior.`);
+      // Send optional local notification if enabled
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('Sior Order Confirmed', {
+          body: `Thank you for your purchase of ${totalPrice}.`,
+          icon: '/logo-new.png'
+        });
+      }
 
       cart = [];
       updateCartUI();
@@ -2359,11 +2363,92 @@ window.deleteDiscount = async (id) => {
 // SETTINGS FUNCTIONS
 // =====================================
 // =====================================
+// NOTIFICATION & TOAST SYSTEM (Flawless UX)
+// =====================================
+const Toast = {
+  show(message, type = 'success', duration = 4000) {
+    // Remove existing if any
+    const existing = document.querySelector('.sior-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = `sior-toast ${type}`;
+    toast.innerHTML = `
+      <div class="toast-icon">${type === 'success' ? '✨' : (type === 'error' ? '⚠️' : '🔔')}</div>
+      <div class="toast-content">${message}</div>
+    `;
+    document.body.appendChild(toast);
+
+    // Trigger animation
+    requestAnimationFrame(() => toast.classList.add('active'));
+
+    // Sound effect for elite feel
+    if (type === 'success') {
+      const audio = new Audio("data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU..."); // Placeholder or silent
+    }
+
+    setTimeout(() => {
+      toast.classList.remove('active');
+      setTimeout(() => toast.remove(), 300);
+    }, duration);
+  }
+};
+
+// Browser Push Notification Manager for Admin
+const AdminNotifier = {
+  async init() {
+    if (!('Notification' in window)) return;
+
+    if (Notification.permission === 'default') {
+      await Notification.requestPermission();
+    }
+
+    if (Notification.permission === 'granted') {
+      console.log('Admin Notifications Active');
+      this.startListening();
+    }
+  },
+
+  startListening() {
+    // Avoid multiple listeners
+    if (window.adminGlobalSubscription) return;
+
+    window.adminGlobalSubscription = supabase
+      .channel('admin-global-events')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, payload => {
+        this.notify('Yeni Sipariş! 💎', `Tutar: ${payload.new.total_price}`);
+        // Also show in-app toast
+        Toast.show(`Yeni Sipariş Geldi: ${payload.new.total_price}`, 'info');
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'analytics_sessions' }, payload => {
+        // Only notify for actual new visits to avoid spam, maybe throttle?
+        // For now, let's just log or silent notify
+        // this.notify('Yeni Ziyaretçi', `${payload.new.country || 'Bilinmeyen'} konumundan.`);
+      })
+      .subscribe();
+  },
+
+  notify(title, body) {
+    if (document.hidden && Notification.permission === 'granted') {
+      new Notification(title, {
+        body: body,
+        icon: '/logo-new.png'
+      });
+    }
+  }
+};
+
+// Initialize Admin Notifications on Load if Admin
+if (localStorage.getItem('sior_admin') === 'true') {
+  AdminNotifier.init();
+}
+
+// =====================================
 // ORDER & CUSTOMER VIEW FUNCTIONS
 // =====================================
 window.viewOrder = async (id) => {
   const { data: order, error } = await supabase.from('orders').select('*').eq('id', id).single();
-  if (error) return alert('Sipariş bulunamadı.');
+  if (error) return Toast.show('Sipariş bulunamadı.', 'error');
 
   const modal = document.createElement('div');
   modal.className = 'admin-product-modal';
@@ -2416,16 +2501,17 @@ window.viewOrder = async (id) => {
 
 window.updateOrderStatus = async (id, status) => {
   const { error } = await supabase.from('orders').update({ status }).eq('id', id);
-  if (error) alert('Hata: ' + error.message);
+  if (error) Toast.show('Hata: ' + error.message, 'error');
   else {
+    Toast.show('Sipariş durumu güncellendi.', 'success');
     document.querySelector('.admin-product-modal')?.remove();
-    loadDashboardTab('orders');
+    if (window.loadDashboardTab) loadDashboardTab('orders');
   }
 };
 
 window.viewCustomer = async (id) => {
   const { data: customer, error } = await supabase.from('customers').select('*').eq('id', id).single();
-  if (error) return alert('Müşteri bulunamadı.');
+  if (error) return Toast.show('Müşteri bulunamadı.', 'error');
 
   const modal = document.createElement('div');
   modal.className = 'admin-product-modal';
@@ -2452,9 +2538,7 @@ window.viewCustomer = async (id) => {
         </div>
       </div>
       
-      <div class="form-actions">
-         <button class="btn-submit" onclick="this.closest('.admin-product-modal').remove()">Tamam</button>
-      </div>
+      <button class="btn-cancel full-width" onclick="this.closest('.admin-product-modal').remove()">Kapat</button>
     </div>
       `;
   document.body.appendChild(modal);

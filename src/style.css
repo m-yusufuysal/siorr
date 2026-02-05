@@ -1,5 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Pinyon+Script&family=Alex+Brush&family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&display=swap');
 
+/* Toast Notification */
+.sior-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
+  color: var(--primary-navy);
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 10000;
+  transform: translateX(120%);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-left: 4px solid var(--secondary-gold);
+}
+
+.sior-toast.active {
+  transform: translateX(0);
+}
+
+.sior-toast.error {
+  border-left-color: #dc3545;
+}
+
+.sior-toast .toast-icon {
+  font-size: 1.2rem;
+}
+
+.sior-toast .toast-content {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
 :root {
   /* Elite Color Palette - Exact Zikra Alignment */
   --primary-navy: #4A6076;
