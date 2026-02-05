@@ -1374,6 +1374,49 @@ header.header-scrolled .logo-subtitle {
   }
 }
 
+/* Mobile Modal Fixes - Critical for Checkout */
+@media (max-width: 600px) {
+
+  .modal-content,
+  .checkout-modal-content,
+  .product-detail-content {
+    width: 95% !important;
+    max-width: 95% !important;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 25px 20px !important;
+    margin: 10px auto;
+    border-radius: 12px;
+  }
+
+  /* Fix payment inputs on mobile */
+  .card-element-container {
+    padding: 10px;
+  }
+
+  .card-element-container input {
+    font-size: 16px;
+    /* Prevents iOS zooom */
+  }
+
+  .payment-tabs {
+    flex-direction: row;
+    /* Keep row but ensure they fit */
+  }
+
+  .pay-tab {
+    padding: 8px 5px;
+    font-size: 0.8rem;
+  }
+
+  /* Checkout specific layout adjustment */
+  .checkout-summary-row {
+    flex-direction: row;
+    font-size: 1rem;
+    margin: 15px 0;
+  }
+}
+
 .about-text h2 {
   font-size: clamp(2rem, 4vw, 3rem);
   margin-bottom: 30px;
@@ -1417,12 +1460,6 @@ header.header-scrolled .logo-subtitle {
   height: 100%;
   object-fit: cover;
   display: block;
-}
-
-.about-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .about-image:hover img {
