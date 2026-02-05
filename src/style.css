@@ -2353,6 +2353,97 @@ body:has(.admin-shell) {
   flex-direction: column;
 }
 
+/* Admin Mobile Responsiveness */
+@media (max-width: 768px) {
+  .admin-shell {
+    display: block !important;
+    /* Stack instead of flex */
+    position: relative;
+  }
+
+  /* Sidebar hidden by default */
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    z-index: 5002;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .admin-sidebar.active {
+    transform: translateX(0);
+  }
+
+  /* Show the toggle button */
+  #admin-mobile-toggle {
+    display: block !important;
+  }
+
+  /* Adjust Main Panel */
+  .admin-main-panel {
+    padding: 70px 20px 30px;
+    /* Top padding for toggle button */
+    width: 100%;
+  }
+
+  /* Stack Grids */
+  .analytics-grid-elite,
+  .stats-grid,
+  .form-row-elite,
+  .form-row-admin {
+    grid-template-columns: 1fr !important;
+    gap: 20px;
+  }
+
+  /* Tables Scrollable */
+  .admin-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .admin-table {
+    min-width: 600px;
+    /* Force scroll */
+    white-space: nowrap;
+  }
+
+  /* Header adjustments */
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+
+  /* Modals */
+  .admin-modal-content {
+    width: 95% !important;
+    padding: 20px !important;
+    margin: 10px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Form inputs */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 14px;
+    /* Better for reading */
+    padding: 12px;
+  }
+}
+
 /* Elite Admin Components */
 .analytics-grid-elite {
   display: grid;

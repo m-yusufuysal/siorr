@@ -768,10 +768,14 @@ function navigateToView(viewId) {
   } else if (viewId === 'admin-dashboard') {
     if (localStorage.getItem('sior_admin') !== 'true') return navigateToView('admin-login');
 
-    // Admin Dashboard Shell
-    document.getElementById('app').innerHTML = `
+    // Create Admin Shell
+    const app = document.getElementById('app');
+    app.innerHTML = `
     <div class="admin-shell">
-      <aside class="admin-sidebar">
+      <button id="admin-mobile-toggle" style="position:fixed; top:15px; left:15px; z-index:6000; background:var(--secondary-gold); border:none; color:white; padding:10px; border-radius:4px; display:none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <aside class="admin-sidebar" id="admin-sidebar">
         <div class="sidebar-logo">
           <div class="logo-text">Sior</div>
           <div class="logo-subtitle">Elite Craftsmanship</div>
@@ -1345,6 +1349,28 @@ window.buyItNow = (id) => {
 };
 
 // Admin Functions & Dashboard Logic
+window.loadDashboardTab = loadDashboardTab;
+loadDashboardTab('home');
+
+// Mobile Menu Toggle Logic
+const toggleBtn = document.getElementById('admin-mobile-toggle');
+const sidebar = document.getElementById('admin-sidebar');
+
+if (toggleBtn && sidebar) {
+  toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+  });
+
+  // Close sidebar when clicking a link on mobile
+  sidebar.querySelectorAll('.sidebar-link').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove('active');
+      }
+    });
+  });
+}
+
 window.logoutAdmin = () => {
   localStorage.removeItem('sior_admin');
   window.location.hash = '';
