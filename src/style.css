@@ -2031,29 +2031,8 @@ footer {
 
   .message-section {
     padding: 80px 20px;
-    background-image: url('/legacy-mobile.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-  }
-
-  /* Optional overlay ensuring text readability if image is busy */
-  .message-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(26, 26, 46, 0.6);
-    /* Navy tint for legibility */
-    z-index: 1;
-  }
-
-  .message-section>* {
-    position: relative;
-    z-index: 2;
+    /* Reverted to solid color background (inherited) as per user request */
+    background-image: none;
   }
 }
 
