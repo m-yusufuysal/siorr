@@ -2326,39 +2326,85 @@ body:has(.admin-shell) {
   font-style: italic;
 }
 
+/* Admin Sidebar Refinements */
+.sidebar-logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.admin-logo-img {
+  width: 120px;
+  height: auto;
+  margin-bottom: 5px;
+  filter: brightness(0) invert(1);
+  /* Ensure white logo on dark bg */
+}
+
+.logo-subtitle {
+  color: var(--secondary-gold);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
   flex-grow: 1;
+}
+
+.sidebar-section {
+  margin-bottom: 25px;
+}
+
+.sidebar-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 0 40px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  opacity: 0.6;
 }
 
 .sidebar-link {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.5);
-  padding: 14px 40px;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 12px 40px;
   text-align: left;
   font-family: var(--font-body);
-  font-size: 13px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.05em;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   width: 100%;
   position: relative;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-link .icon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
 }
 
 .sidebar-link:hover {
   color: var(--white);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .sidebar-link.active {
-  color: var(--secondary-gold);
-  background: rgba(197, 160, 89, 0.05);
+  color: var(--bg-cream);
+  background: rgba(212, 185, 150, 0.15);
   font-weight: 600;
+  border-left: 3px solid var(--secondary-gold);
+  padding-left: 37px;
 }
 
 .side-link.logout {

@@ -777,7 +777,7 @@ function navigateToView(viewId) {
       </button>
       <aside class="admin-sidebar" id="admin-sidebar">
         <div class="sidebar-logo">
-          <div class="logo-text">Sior</div>
+          <img src="${getAssetPath('/logo.png')}" alt="Sior Logo" class="admin-logo-img">
           <div class="logo-subtitle">Elite Craftsmanship</div>
         </div>
         <nav class="sidebar-nav">
