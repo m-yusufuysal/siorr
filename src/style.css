@@ -629,6 +629,89 @@ header.header-scrolled .logo-subtitle {
   }
 }
 
+/* Payment UI styles */
+.checkout-divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.05);
+  margin: 20px 0;
+}
+
+.payment-section {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.section-label {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: var(--primary-navy);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.payment-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.pay-tab {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.pay-tab.active {
+  border-color: var(--secondary-gold);
+  background: rgba(212, 175, 55, 0.05);
+  color: var(--secondary-gold);
+  font-weight: 500;
+}
+
+.card-element-container {
+  background: white;
+  border: 1px solid #e1e1e1;
+  border-radius: 6px;
+  padding: 15px;
+}
+
+.secure-badge {
+  font-size: 11px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+  margin-top: 15px;
+  opacity: 0.8;
+}
+
+.checkout-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  color: var(--primary-navy);
+}
+
+.checkout-total-value {
+  font-weight: 700;
+  color: var(--secondary-gold);
+}
+
 /* Luxury Form Improvements */
 .luxury-form {
   max-width: 800px;
