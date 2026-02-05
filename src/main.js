@@ -531,9 +531,7 @@ async function renderProducts(category = 'All', targetId = 'product-grid') {
   const countEl = document.getElementById('product-count');
   if (countEl) countEl.textContent = productsState.length;
 
-  if (typeof initReveal === 'function') initReveal();
-  const countEl = document.getElementById('product-count');
-  if (countEl) countEl.textContent = productsState.length;
+
 }
 
 window.switchCategoryTab = (category, btn) => {
