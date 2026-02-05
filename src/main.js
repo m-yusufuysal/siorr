@@ -322,18 +322,6 @@ document.querySelector('#app').innerHTML = `
           <label>Contact Information</label>
           <input type="email" placeholder="Email Address" required>
         </div>
-        <div class="form-group">
-          <label>Shipping Address</label>
-          <input type="text" placeholder="Full Name" required>
-          <input type="text" placeholder="Address" required>
-          <div class="form-row">
-            <input type="text" placeholder="City" required>
-            <input type="text" placeholder="Zip Code" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Payment Details</label>
-          <div class="fake-card-input">
             <span class="icon">💳</span>
             <input type="text" placeholder="Card Number" required>
           </div>
