@@ -286,6 +286,53 @@ header.header-scrolled .logo-subtitle {
   /* Maximum visibility as requested */
 }
 
+/* Live Status Indicator */
+.live-status-badge {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.live-status-badge .status-dot {
+  width: 6px;
+  height: 6px;
+  background: #666;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.live-status-badge.connected {
+  color: #4ade80;
+}
+
+.live-status-badge.connected .status-dot {
+  background: #4ade80;
+  box-shadow: 0 0 10px #4ade80;
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4);
+  }
+
+  70% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 5px rgba(74, 222, 128, 0);
+  }
+
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+  }
+}
+
 
 /* Masterpiece Diamond dot removed as requested */
 

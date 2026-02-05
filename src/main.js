@@ -1379,6 +1379,7 @@ window.buyItNow = (id) => {
 
 // Admin Functions & Dashboard Logic
 window.loadDashboardTab = loadDashboardTab;
+window.currentAdminTab = 'home'; // Default
 loadDashboardTab('home');
 
 // Mobile Menu Toggle Logic Moved inside navigateToView function
@@ -1397,6 +1398,7 @@ function initAdminTabs() {
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       const tabId = tab.dataset.tab;
+      window.currentAdminTab = tabId; // Track active tab for real-time updates
       loadDashboardTab(tabId);
     });
   });
@@ -2428,19 +2430,52 @@ const AdminNotifier = {
     // Avoid multiple listeners
     if (window.adminGlobalSubscription) return;
 
+    // Add Live Indicator
+    const liveIndicator = document.createElement('div');
+    liveIndicator.id = 'admin-live-status';
+    liveIndicator.className = 'live-status-badge';
+    liveIndicator.innerHTML = '<span class="status-dot"></span> Live Connected';
+    document.querySelector('.admin-sidebar .sidebar-logo')?.appendChild(liveIndicator);
+
     window.adminGlobalSubscription = supabase
       .channel('admin-global-events')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, payload => {
-        this.notify('Yeni Sipariş! 💎', `Tutar: ${payload.new.total_price}`);
-        // Also show in-app toast
-        Toast.show(`Yeni Sipariş Geldi: ${payload.new.total_price}`, 'info');
+      .on('postgres_changes', { event: '*', schema: 'public' }, payload => {
+        // Global Handler for Auto-Refresh and Notifications
+
+        // 1. ORDERS
+        if (payload.table === 'orders') {
+          if (payload.eventType === 'INSERT') {
+            this.notify('Yeni Sipariş! 💎', `Tutar: ${payload.new.total_price}`);
+            Toast.show(`Yeni Sipariş Geldi: ${payload.new.total_price}`, 'info');
+          }
+          // Auto-refresh order table if open
+          if (window.currentAdminTab === 'orders' && window.loadDashboardTab) {
+            window.loadDashboardTab('orders'); // Soft refresh
+          }
+          // Refresh overview stats if open
+          if (window.currentAdminTab === 'overview' && window.loadDashboardTab) {
+            window.loadDashboardTab('overview');
+          }
+        }
+
+        // 2. PRODUCTS
+        if (payload.table === 'products') {
+          if (window.currentAdminTab === 'products' && window.renderAdminProducts) {
+            window.renderAdminProducts(); // Refresh list to show new stock/changes
+            Toast.show('Ürün listesi güncellendi.', 'info');
+          }
+        }
+
+        // 3. SESSIONS (Visits)
+        if (payload.table === 'analytics_sessions') {
+          // Handled by specific channel in Overview, but good to have global hook
+        }
       })
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'analytics_sessions' }, payload => {
-        // Only notify for actual new visits to avoid spam, maybe throttle?
-        // For now, let's just log or silent notify
-        // this.notify('Yeni Ziyaretçi', `${payload.new.country || 'Bilinmeyen'} konumundan.`);
-      })
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          document.getElementById('admin-live-status')?.classList.add('connected');
+        }
+      });
   },
 
   notify(title, body) {
