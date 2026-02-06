@@ -150,6 +150,47 @@ function initApp() {
     })
     .subscribe();
 
+  // Real-time Order Notifications for Admin
+  supabase
+    .channel('admin-orders')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, (payload) => {
+      console.log('New Order Received:', payload);
+      const isAdmin = localStorage.getItem('sior_admin') === 'true';
+
+      if (isAdmin) {
+        // Play notification sound (optional, browser policy may block)
+        // const audio = new Audio('/notification.mp3'); 
+        // audio.play().catch(e => console.log('Audio blocked', e));
+
+        // Show Admin Toast
+        const toast = document.createElement('div');
+        toast.className = 'admin-toast';
+        toast.innerHTML = `
+          <div class="admin-toast-icon">🛍️</div>
+          <div class="admin-toast-content">
+            <h4>YENİ SİPARİŞ!</h4>
+            <p>${payload.new.total_price} tutarında yeni bir sipariş alındı.<br><small>${payload.new.customer_email}</small></p>
+          </div>
+        `;
+        document.body.appendChild(toast);
+
+        // Anime in
+        setTimeout(() => toast.classList.add('active'), 100);
+
+        // Auto dismiss
+        setTimeout(() => {
+          toast.classList.remove('active');
+          setTimeout(() => toast.remove(), 500);
+        }, 6000);
+
+        // Refresh Orders Table if open
+        if (window.currentAdminTab === 'orders' || window.currentAdminTab === 'overview') {
+          loadDashboardTab(window.currentAdminTab);
+        }
+      }
+    })
+    .subscribe();
+
   // Handle /admin routing
   const path = window.location.pathname;
   if (path.endsWith('/admin') || window.location.hash === '#admin') {
@@ -322,13 +363,15 @@ document.querySelector('#app').innerHTML = `
           <label>Contact Information</label>
           <input type="email" placeholder="Email Address" required>
         </div>
+        <div class="form-group">
+          <div class="fake-card-input">
             <span class="icon">💳</span>
             <input type="text" placeholder="Card Number" required>
           </div>
-          <div class="form-row">
-            <input type="text" placeholder="MM/YY" required>
-            <input type="text" placeholder="CVC" required>
-          </div>
+        </div>
+        <div class="form-row">
+          <input type="text" placeholder="MM/YY" required>
+          <input type="text" placeholder="CVC" required>
         </div>
         <button type="submit" class="btn-primary full-width">Pay Now <span id="checkout-btn-price"></span></button>
       </form>
@@ -365,12 +408,42 @@ initApp();
 document.addEventListener('submit', async (e) => {
   if (e.target.id === 'checkout-form') {
     e.preventDefault();
-    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const modalContent = form.closest('.modal-content');
+
+    // Lock Form
+    const inputs = form.querySelectorAll('input');
+    inputs.forEach(i => i.disabled = true);
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Processing...';
+
+    // Create Processing Overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'processing-overlay';
+    overlay.innerHTML = `
+      <div class="processing-spinner"></div>
+      <div class="processing-status">Secure Connection</div>
+      <div class="processing-step">Encrypting data...</div>
+    `;
+    modalContent.appendChild(overlay);
+
+    const updateStatus = (status, step) => {
+      overlay.querySelector('.processing-status').textContent = status;
+      overlay.querySelector('.processing-step').textContent = step;
+    };
+
+    // Realistic Timeline
+    await new Promise(r => setTimeout(r, 1500));
+    updateStatus('Processing', 'Verifying payment method...');
+
+    await new Promise(r => setTimeout(r, 2000));
+    updateStatus('Processing', 'Authorizing transaction...');
+
+    await new Promise(r => setTimeout(r, 1500));
+    updateStatus('Approved', 'Finalizing order...');
 
     const ref = localStorage.getItem('sior_ref');
-    const customerEmail = e.target.querySelector('input[type="email"]').value;
+    const customerEmail = form.querySelector('input[type="email"]').value;
     const totalPrice = document.getElementById('checkout-btn-price').textContent;
 
     const { data, error } = await supabase.from('orders').insert([{
@@ -381,29 +454,73 @@ document.addEventListener('submit', async (e) => {
         const p = productsState.find(prod => prod.id === item.id);
         return { name: p.name, quantity: item.quantity, price: p.price };
       })
-    }]);
+    }]).select(); // Select to return the inserted data
+
+    await new Promise(r => setTimeout(r, 800)); // Slight delay for final step
 
     if (error) {
-      Toast.show('Checkout Failed: ' + error.message, 'error');
+      overlay.remove();
+      Toast.show('Payment Failed: ' + error.message, 'error');
+      inputs.forEach(i => i.disabled = false);
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Pay Now';
     } else {
-      // Flawless Success Feedback
-      Toast.show('Siparişiniz Başarıyla Alındı! ✨', 'success');
+      // SUCCESS - Show Receipt Modal
+      const orderId = data && data[0] ? data[0].id : Math.floor(Math.random() * 10000);
+      const orderDate = new Date().toLocaleDateString('en-AE', { year: 'numeric', month: 'long', day: 'numeric' });
 
-      // Send optional local notification if enabled
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification('Sior Order Confirmed', {
-          body: `Thank you for your purchase of ${totalPrice}.`,
-          icon: '/logo-new.png'
-        });
+      // Close checkout modal
+      document.getElementById('checkout-modal').classList.remove('active');
+
+      // Create Receipt Modal dynamically
+      let receiptModal = document.getElementById('receipt-modal');
+      if (!receiptModal) {
+        receiptModal = document.createElement('div');
+        receiptModal.id = 'receipt-modal';
+        receiptModal.className = 'modal-overlay active';
+        document.body.appendChild(receiptModal);
+      } else {
+        receiptModal.classList.add('active');
       }
 
+      receiptModal.innerHTML = `
+        <div class="modal-content receipt-modal-content">
+          <div class="receipt-header">
+            <div class="receipt-logo">Sior</div>
+            <div class="logo-subtitle" style="color:#aaa; font-size: 10px; letter-spacing:0.3em;">ELITE CRAFTSMANSHIP</div>
+          </div>
+          <div class="receipt-title">Order Confirmed</div>
+          <p class="receipt-message">Thank you for your patronage. Your order has been securely processed and a confirmation email has been sent to <strong>${customerEmail}</strong>.</p>
+          
+          <div class="receipt-details">
+            <div class="receipt-row">
+              <span>Order Reference</span>
+              <span>#${orderId}</span>
+            </div>
+            <div class="receipt-row">
+              <span>Date</span>
+              <span>${orderDate}</span>
+            </div>
+            <div class="receipt-row">
+              <span>Payment Method</span>
+              <span>Credit Card (Ending in ${form.querySelector('input[placeholder="Card Number"]').value.slice(-4)})</span>
+            </div>
+            <div class="receipt-row">
+              <span>Total Amount</span>
+              <span>${totalPrice}</span>
+            </div>
+          </div>
+
+          <div class="receipt-footer">
+            Sior Heritage Group &copy; ${new Date().getFullYear()}. All Rights Reserved.
+          </div>
+
+          <button class="btn-primary" style="margin-top: 20px; min-width: 200px;" onclick="document.getElementById('receipt-modal').classList.remove('active')">Close</button>
+        </div>
+      `;
+
+      // Reset System
       cart = [];
       updateCartUI();
-      document.getElementById('checkout-modal').classList.remove('active');
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Pay Now';
     }
   }
 });

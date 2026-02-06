@@ -3867,4 +3867,187 @@ body:has(.admin-shell) header:not(.admin-panel-header) {
 
 .full-width {
   grid-column: 1 / -1;
+}/* Realistic Checkout & Admin Notifications */
+
+/* Payment Processing Overlay */
+.processing-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: 8px;
+    animation: fadeIn 0.3s ease;
+}
+
+.processing-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(212, 175, 55, 0.2);
+    border-top-color: var(--secondary-gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+.processing-status {
+    font-family: var(--font-heading);
+    color: var(--primary-navy);
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.processing-step {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 10px;
+    opacity: 0.8;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Receipt Modal (Email Style) */
+.receipt-modal-content {
+    max-width: 600px;
+    background: white;
+    padding: 40px;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
+.receipt-header {
+    border-bottom: 2px solid var(--secondary-gold);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.receipt-logo {
+    font-family: var(--font-logo);
+    font-size: 42px;
+    color: var(--primary-navy);
+    margin-bottom: 5px;
+}
+
+.receipt-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--primary-navy);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.receipt-message {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.receipt-details {
+    background: #fdfbf7;
+    padding: 20px;
+    border-radius: 4px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    color: var(--primary-navy);
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+    padding-bottom: 5px;
+}
+
+.receipt-row:last-child {
+    border-bottom: none;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.receipt-footer {
+    font-size: 0.85rem;
+    color: #999;
+    margin-top: 30px;
+}
+
+/* Admin New Order Toast */
+.admin-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--primary-navy);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 7000;
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-left: 4px solid var(--secondary-gold);
+    max-width: 350px;
+}
+
+.admin-toast.active {
+    transform: translateX(0);
+}
+
+.admin-toast-icon {
+    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.admin-toast-content h4 {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    margin-bottom: 3px;
+    color: var(--secondary-gold);
+}
+
+.admin-toast-content p {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.3;
 }
